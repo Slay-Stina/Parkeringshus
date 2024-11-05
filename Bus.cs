@@ -21,4 +21,9 @@ internal class Bus : Vehicle
 
         Parking.AvailableSpace -= 2;
     }
+
+    public Bus(Bus bus)
+    {
+        RegPlate = bus.RegPlate + "x";
+    }
 }

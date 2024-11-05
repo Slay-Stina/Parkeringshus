@@ -11,18 +11,18 @@ internal class Program
 
         while (true)
         {
+            Parking.SpaceList();
             Console.WriteLine("1. Nytt fordon\t2. Checka ut");
             switch (Check.Bool())
             {
                 case true:
-                    Parking.NewVehicle(random.Next(3));
+                    Parking.NewVehicle(random.Next(3)); 
                     break;
                 case false:
-                    Parking.CheckOut();
+                    Check.Out();
                     break;
             }
             Console.Clear();
-            Parking.SpaceList();
         }
     }
 }

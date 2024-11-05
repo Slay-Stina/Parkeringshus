@@ -21,6 +21,14 @@ internal class Parking
         }
         
     }
+    private class MCSpace
+    {
+        public Dictionary<string, Motorcycle> MCList { get; set; }
+        public MCSpace()
+        {
+            MCList = new Dictionary<string, Motorcycle>();
+        }
+    }
     public static void SpaceList()
     {
         int index = 1;
@@ -28,7 +36,7 @@ internal class Parking
         {
             if(parking.Value is null)
             {
-                Console.Write($"Plats {parking.Key}");
+                Console.Write($"P {parking.Key}");
                 Console.WriteLine();
             }
 
@@ -36,7 +44,7 @@ internal class Parking
             {
                 foreach (var MC in ((MCSpace)parking.Value).MCList)
                 {
-                    Console.Write($"Plats {index}");
+                    Console.Write($"P {index}");
                     Motorcycle motorcycle = MC.Value;
                     Console.WriteLine($"\tMC\t{motorcycle.RegPlate}\t{motorcycle.Color}\t{motorcycle.Brand}");
                 }
@@ -44,70 +52,69 @@ internal class Parking
 
             if (parking.Value is Car)
             {
-                Console.Write($"Plats {index}");
+                Console.Write($"P {index}");
                 Car car = (Car)parking.Value;
                 Console.WriteLine($"\tBil\t{car.RegPlate}\t{car.Color}\t{(car.EV ? "el" : "vanlig ")}bil");
             }
 
-            if (parking.Value is Bus)
+            if (parking.Value is Bus && ((Bus)parking.Value).RegPlate.Length == 6)
             {
-                Console.Write($"Plats {index}");
                 Bus bus = (Bus)parking.Value;
+                Console.Write($"P {index}-{index+1}");
                 Console.WriteLine($"\tBuss\t{bus.RegPlate}\t{bus.Color}\t{bus.Passengers} platser");
             }
             index++;
         }
     }
 
-    internal static void AddVehicle(Vehicle vehicle)
+    internal static void AddCar(Car car)
     {
-        if (vehicle is Motorcycle)
-        {
-            AddMotorcycle(vehicle);
-            return;
-        }
         foreach (var parking in Space)
         {
-            if (parking.Value is null && vehicle is Car)
+            if (parking.Value is null)
             {
-                Space[parking.Key] = vehicle;
+                Space[parking.Key] = car;
                 return;
             }            
         }
         
     }
 
-    private static void AddBus(KeyValuePair<string, object> parking, Vehicle vehicle)
+    private static void AddBus(Bus bus)
     {
-        Space.Remove(parking.Key);
-        Bus bus = (Bus)vehicle;
-
+        for (int i = 0; i < Space.Count; i++)
+        {
+            if (Space.ElementAt(i).Value is null && Space.ElementAt(i+1).Value is null)
+            {
+                Space[Space.ElementAt(i).Key] = bus;
+                Space[Space.ElementAt(i+1).Key] = new Bus(bus);
+                return;
+            }
+        }
     }
 
-    private static void AddMotorcycle(Vehicle vehicle)
+    private static void AddMotorcycle(Motorcycle motorcycle)
     {
-        Motorcycle motorcycle = (Motorcycle)vehicle;
-
         foreach (var parking in Space)
         {
             if (!Space.Values.Contains(parking.Value is MCSpace) && parking.Value is null)
             {
                 MCSpace MCSpace = new MCSpace();
                 Space[parking.Key] = MCSpace;
-                MCSpace.MCList.Add(vehicle.RegPlate, (Motorcycle)vehicle);
+                MCSpace.MCList.Add(motorcycle.RegPlate, (Motorcycle)motorcycle);
                 return;
             }
             if (parking.Value is MCSpace && ((MCSpace)parking.Value).MCList.Count < 2)
             {
                 MCSpace MCSpace = (MCSpace)parking.Value;
-                MCSpace.MCList.Add(vehicle.RegPlate, (Motorcycle)vehicle);
+                MCSpace.MCList.Add(motorcycle.RegPlate, (Motorcycle)motorcycle);
                 return;
             }
             else if (parking.Value is null)
             {
                 MCSpace MCSpace = new MCSpace();
                 Space[parking.Key] = MCSpace;
-                MCSpace.MCList.Add(vehicle.RegPlate, (Motorcycle)vehicle);
+                MCSpace.MCList.Add(motorcycle.RegPlate, (Motorcycle)motorcycle);
                 return;
             }
         }
@@ -118,53 +125,51 @@ internal class Parking
         if (AvailableSpace == 0.5)
         {
             Console.WriteLine("Det finns bara plats för en motorcykel kvar i parkeringshuset.");
-            AddVehicle(new Motorcycle());
+            AddMotorcycle(new Motorcycle());
         }
-        else if ( AvailableSpace < 2)
+        else if (AvailableSpace >= 2)
         {
             switch (randomVehicle)
             {
                 case 0:
-                    AddVehicle(new Motorcycle());
+                    AddMotorcycle(new Motorcycle());
                     break;
                 case 1:
-                    AddVehicle(new Car());
+                    AddCar(new Car());
+                    break;
+                case 2:
+                    if (Check.ForBusSpace())
+                    {
+                        AddBus(new Bus());
+                    }
+                    else
+                    {
+                        Console.WriteLine("En buss försöker parkera, men det finns inte 2 lediga platser bredvid varandra, så den åkte vidare");
+                        Thread.Sleep(2000);
+                    }
                     break;
             }
         }
-        else if (AvailableSpace > 2)
+        else if (AvailableSpace < 2 && AvailableSpace > 0)
         {
             switch (randomVehicle)
             {
                 case 0:
-                    AddVehicle(new Motorcycle());
+                    AddMotorcycle(new Motorcycle());
                     break;
                 case 1:
-                    AddVehicle(new Car());
+                    AddCar(new Car());
                     break;
-                case 2:
-                    Console.WriteLine("En buss");
-                    //AddVehicle(new Bus());
+                default:
+                    Console.WriteLine("En buss försöker parkera, men det finns inte 2 lediga platser bredvid varandra, så den åkte vidare");
+                    Thread.Sleep(2000);
                     break;
             }
         }
         else
         {
             Console.WriteLine("Parkeringhuset är fullt! Någon måste checka ut.");
-        }
-    }
-
-    internal static void CheckOut()
-    {
-        throw new NotImplementedException();
-    }
-
-    private class MCSpace
-    {
-        public Dictionary<string, Motorcycle> MCList { get; set; }
-        public MCSpace()
-        {
-            MCList = new Dictionary<string, Motorcycle>();
+            Thread.Sleep(2000);
         }
     }
 }
