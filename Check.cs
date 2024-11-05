@@ -48,6 +48,45 @@ internal class Check
 
     internal static void Out()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Skriv registreringsnumret för fordonet du vill ckecka ut:");
+        string checkOutReg = Console.ReadLine().ToUpper();
+        if (checkOutReg != null && checkOutReg != "" && checkOutReg.Length == 6)
+        {
+            foreach (var parking in Parking.Space)
+            {
+                if (parking.Value is not null)
+                {
+                    if (parking.Value is Vehicle)
+                    {
+                        Vehicle vehicle = (Vehicle)parking.Value;
+                        if (vehicle.RegPlate.Contains(checkOutReg))
+                        {
+                            Parking.Space[parking.Key] = null;
+                        }
+                    }
+                    if (parking.Value is Parking.MCSpace)
+                    {
+                        Parking.MCSpace MCSpace = (Parking.MCSpace)parking.Value;
+                        foreach (var MC in MCSpace.MCList)
+                        {
+                            if (MC.Value.RegPlate.Contains(checkOutReg))
+                            {
+                                MCSpace.MCList.Remove(MC.Key);
+                            }
+                        }
+                        if (MCSpace.MCList.Count == 0)
+                        {
+                            Parking.Space[parking.Key] = null;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("Fel input");
+            Thread.Sleep(2000);
+        }
+
     }
 }

@@ -21,7 +21,7 @@ internal class Parking
         }
         
     }
-    private class MCSpace
+    public class MCSpace
     {
         public Dictionary<string, Motorcycle> MCList { get; set; }
         public MCSpace()
@@ -31,6 +31,10 @@ internal class Parking
     }
     public static void SpaceList()
     {
+        string header = "Plats\tTyp\tReg.Nr\tFärg\tUnikt";
+        Console.WriteLine(header);
+        Console.WriteLine("=====================================");
+
         int index = 1;
         foreach (var parking in Space)
         {
