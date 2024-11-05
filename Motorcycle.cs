@@ -12,13 +12,12 @@ internal class Motorcycle : Vehicle
 
     public Motorcycle()
     {
-        ParkSpace = 0.5;
-
         Console.WriteLine("En ny motorcykel åker in i parkeringshuset");
         Console.Write("Vad är det för färg: ");
         Color = Console.ReadLine();
         Console.Write("Vad är det för märke: ");
         Brand = Console.ReadLine();
 
+        Parking.AvailableSpace -= 0.5;
     }
 }

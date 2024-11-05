@@ -18,5 +18,7 @@ internal class Car : Vehicle
         Color = Console.ReadLine();
         Console.Write("Är det en elbil? 1.JA | 2.NEJ ");
         EV = Check.Bool();
+
+        Parking.AvailableSpace -= 1;
     }
 }

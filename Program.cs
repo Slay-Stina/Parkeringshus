@@ -7,28 +7,22 @@ internal class Program
     static void Main(string[] args)
     {
         Random random = new Random();
-        List<Parking> parkingHouse = new List<Parking>();
-        for (int i = 0; i < 15; i++)
-        {
-            parkingHouse.Add(new Parking());
-        }
+        Parking parkinghouse = new Parking();
+
         while (true)
         {
-            Parking.SpaceList(parkingHouse);
-            switch (random.Next(3))
+            Console.WriteLine("1. Nytt fordon\t2. Checka ut");
+            switch (Check.Bool())
             {
-                case 0:
-                    Motorcycle motorcycle = new Motorcycle();
+                case true:
+                    Parking.NewVehicle(random.Next(3));
                     break;
-                case 1:
-                    Car car = new Car();
-                    break;
-                case 2:
-                    Bus bus = new Bus();
+                case false:
+                    Parking.CheckOut();
                     break;
             }
-
-            Console.ReadKey();
+            Console.Clear();
+            Parking.SpaceList();
         }
     }
 }

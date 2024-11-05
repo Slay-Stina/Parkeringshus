@@ -18,5 +18,7 @@ internal class Bus : Vehicle
         Color = Console.ReadLine();
         Console.Write("Hur många platser har den: ");
         Passengers = Check.Int();
+
+        Parking.AvailableSpace -= 2;
     }
 }
