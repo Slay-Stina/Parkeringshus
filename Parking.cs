@@ -3,11 +3,11 @@
 internal class Parking
 {
     public static double AvailableSpace = 15;
-    public static Dictionary<string, Object> Space { get; set; }
+    public static Dictionary<string, object> Space { get; set; }
 
     public Parking()
     {
-        Space = new Dictionary<string, Object>();
+        Space = new Dictionary<string, object>();
         for (int i = 1; i <= 15; i++)
         {
             Space.Add($"{i}", null);
@@ -16,11 +16,7 @@ internal class Parking
 
     public class MCSpace
     {
-        public Dictionary<string, Motorcycle> MCList { get; set; }
-        public MCSpace()
-        {
-            MCList = new Dictionary<string, Motorcycle>();
-        }
+        public Dictionary<string, Motorcycle> MCList = new Dictionary<string, Motorcycle>();
     }
 
     public static void SpaceList()
@@ -33,29 +29,27 @@ internal class Parking
         {
             if (parking.Value is null)
             {
-                Console.Write($"P {parking.Key}");
-                Console.WriteLine();
+                Console.WriteLine($"P {parking.Key}");
+                continue;
             }
 
-            if (parking.Value is MCSpace)
+            switch (parking.Value)
             {
-                foreach (var MC in ((MCSpace)parking.Value).MCList)
-                {
-                    Motorcycle motorcycle = MC.Value;
-                    motorcycle.Info(index);
-                }
-            }
-
-            if (parking.Value is Car)
-            {
-                Car car = (Car)parking.Value;
-                car.Info(index);
-            }
-
-            if (parking.Value is Bus && ((Bus)parking.Value).RegPlate.Length == 6)
-            {
-                Bus bus = (Bus)parking.Value;
-                bus.Info(index);
+                case MCSpace mcSpace:
+                    foreach (var mc in mcSpace.MCList.Values)
+                    {
+                        mc.Info(index);
+                    }
+                    break;
+                case Car car:
+                    car.Info(index);
+                    break;
+                case Bus bus:
+                    if (bus.RegPlate.Length == 6)
+                    {
+                        bus.Info(index);
+                    }
+                    break;
             }
             index++;
         }
@@ -105,17 +99,12 @@ internal class Parking
             }
             if (parking.Value is null)
             {
-                AddMCSpace(parking, motorcycle);
+                MCSpace MCSpace = new MCSpace();
+                MCSpace.MCList.Add(motorcycle.RegPlate, motorcycle);
+                Space[parking.Key] = MCSpace;
                 return;
             }
         }
-    }
-
-    private static void AddMCSpace(KeyValuePair<string, object> parking, Motorcycle motorcycle)
-    {
-        MCSpace MCSpace = new MCSpace();
-        MCSpace.MCList.Add(motorcycle.RegPlate, motorcycle);
-        Space[parking.Key] = MCSpace;
     }
 
     internal static void NewVehicle(int randomVehicle)
