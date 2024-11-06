@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Parkeringshus;
+﻿namespace Parkeringshus;
 
 internal class Car : Vehicle
 {
-    public bool EV {  get; set; }
+    public bool EV { get; set; }
     public Car()
     {
-        ParkSpace = 1;
-
         Console.WriteLine("En ny bil åker in i parkeringshuset");
         Console.Write("Vad är det för färg: ");
         Color = Console.ReadLine();
@@ -20,5 +12,11 @@ internal class Car : Vehicle
         EV = Check.Bool();
 
         Parking.AvailableSpace -= 1;
+    }
+
+    internal override void Info(int index)
+    {
+        base.Info(index);
+        Console.WriteLine($"\tBil\t{(EV ? "el" : "vanlig ")}bil");
     }
 }

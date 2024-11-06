@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Parkeringshus;
+﻿namespace Parkeringshus;
 
 internal class Motorcycle : Vehicle
 {
@@ -19,5 +13,11 @@ internal class Motorcycle : Vehicle
         Brand = Console.ReadLine();
 
         Parking.AvailableSpace -= 0.5;
+    }
+
+    internal override void Info(int index)
+    {
+        base.Info(index);
+        Console.WriteLine($"\tMC\t{Brand}");
     }
 }

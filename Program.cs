@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Parkeringshus;
+﻿namespace Parkeringshus;
 
 internal class Program
 {
@@ -11,12 +9,13 @@ internal class Program
 
         while (true)
         {
+            Console.WriteLine("1.5kr/min");
             Parking.SpaceList();
             Console.WriteLine("1. Nytt fordon\t2. Checka ut");
             switch (Check.Bool())
             {
                 case true:
-                    Parking.NewVehicle(random.Next(3)); 
+                    Parking.NewVehicle(random.Next(3));
                     break;
                 case false:
                     Check.Out();

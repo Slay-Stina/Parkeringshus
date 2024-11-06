@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Parkeringshus;
 
-namespace Parkeringshus;
-
-internal class Check
+abstract class Check
 {
     internal static bool Bool()
     {
@@ -16,21 +10,9 @@ internal class Check
             {
                 return (choice == 1) ? true : false;
             }
-            
+
             Console.WriteLine("Fel input, ange igen: ");
         }
-    }
-
-    internal static bool ForBusSpace()
-    {
-        for (int i = 0; i < Parking.Space.Count-1; i++)
-        {
-            if (Parking.Space.ElementAt(i).Value is null && Parking.Space.ElementAt(i + 1).Value is null)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     internal static int Int()
@@ -59,8 +41,9 @@ internal class Check
                     if (parking.Value is Vehicle)
                     {
                         Vehicle vehicle = (Vehicle)parking.Value;
-                        if (vehicle.RegPlate.Contains(checkOutReg))
+                        if (vehicle.RegPlate.Contains(checkOutReg) && vehicle.RegPlate.Length == 6)
                         {
+                            CheckoutString(vehicle);
                             Parking.Space[parking.Key] = null;
                         }
                     }
@@ -71,6 +54,7 @@ internal class Check
                         {
                             if (MC.Value.RegPlate.Contains(checkOutReg))
                             {
+                                CheckoutString(MC.Value);
                                 MCSpace.MCList.Remove(MC.Key);
                             }
                         }
@@ -88,5 +72,24 @@ internal class Check
             Thread.Sleep(2000);
         }
 
+    }
+
+    private static void CheckoutString(Vehicle vehicle)
+    {
+        TimeSpan inOutDiff = DateTime.Now - vehicle.CheckinTime;
+        Console.WriteLine($"{vehicle.RegPlate} parkerade {inOutDiff.Minutes} minuter och det kostade {inOutDiff.Minutes * 1.5}kr");
+        if(vehicle is Car)
+        {
+            Parking.AvailableSpace += 1;
+        }
+        if (vehicle is Bus)
+        {
+            Parking.AvailableSpace += 2;
+        }
+        if (vehicle is Motorcycle)
+        {
+            Parking.AvailableSpace += 0.5;
+        }
+        Thread.Sleep(2000);
     }
 }

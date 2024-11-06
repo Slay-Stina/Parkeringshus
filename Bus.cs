@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Parkeringshus;
+﻿namespace Parkeringshus;
 
 internal class Bus : Vehicle
 {
     public int Passengers { get; set; }
     public Bus()
     {
-        ParkSpace = 2;
-
         Console.WriteLine("En ny buss åker in i parkeringshuset");
         Console.Write("Vad är det för färg: ");
         Color = Console.ReadLine();
@@ -25,5 +17,11 @@ internal class Bus : Vehicle
     public Bus(Bus bus)
     {
         RegPlate = bus.RegPlate + "x";
+    }
+
+    internal override void Info(int index)
+    {
+        base.Info(index);
+        Console.WriteLine($"\tBuss\t{Passengers} platser");
     }
 }

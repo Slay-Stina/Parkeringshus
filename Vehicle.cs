@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Parkeringshus;
 
-namespace Parkeringshus;
-
-internal class Vehicle
+abstract class Vehicle
 {
     public static Random Random = new Random();
-    public string Color;
+    public string Color {  get; set; }
     public string RegPlate = GetRandomPlate();
-
-    public double ParkSpace { get; set; }
+    public DateTime CheckinTime = DateTime.Now;
 
     private static string GetRandomPlate()
     {
@@ -26,5 +19,12 @@ internal class Vehicle
             regplate += Random.Next(10).ToString();
         }
         return regplate;
+    }
+
+    internal virtual void Info(int index)
+    {
+        string busSpaceNr = (this is Bus) ? $"-{index + 1}" : "";
+        Console.Write($"P {index}{busSpaceNr}");
+        Console.Write($"\t{CheckinTime.ToShortTimeString()}\t{RegPlate}\t{Color}");
     }
 }
