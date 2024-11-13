@@ -3,14 +3,14 @@
 internal class Parking
 {
     public static double AvailableSpace = 15;
-    public static Dictionary<string, object> Space { get; set; }
+    public static List<object> Space { get; set; }
 
     public Parking()
     {
-        Space = new Dictionary<string, object>();
+        Space = new List<object>();
         for (int i = 1; i <= 15; i++)
         {
-            Space.Add($"{i}", null);
+            Space.Add(null);
         }
     }
 
@@ -27,13 +27,12 @@ internal class Parking
         int index = 1;
         foreach (var parking in Space)
         {
-            if (parking.Value is null)
+            if (parking is null)
             {
-                Console.WriteLine($"P {parking.Key}");
-                continue;
+                Console.WriteLine($"P {index}");
             }
 
-            switch (parking.Value)
+            switch (parking)
             {
                 case MCSpace mcSpace:
                     foreach (var mc in mcSpace.MCList.Values)
@@ -59,9 +58,9 @@ internal class Parking
     {
         foreach (var parking in Space)
         {
-            if (parking.Value is null)
+            if (parking is null)
             {
-                Space[parking.Key] = car;
+                Space[Space.IndexOf(parking)] = car;
                 return;
             }
         }
@@ -71,10 +70,10 @@ internal class Parking
     {
         for (int i = 0; i < Space.Count - 1; i++)
         {
-            if (Space.ElementAt(i).Value is null && Space.ElementAt(i + 1).Value is null)
+            if (Space[i] is null && Space[i + 1] is null)
             {
-                Space[Space.ElementAt(i).Key] = bus;
-                Space[Space.ElementAt(i + 1).Key] = new Bus(bus);
+                Space[i] = bus;
+                Space[i + 1] = new Bus(bus);
                 return;
             }
         }
@@ -92,16 +91,16 @@ internal class Parking
     {
         foreach (var parking in Space)
         {
-            if (parking.Value is MCSpace mcSpace && mcSpace.MCList.Count < 2)
+            if (parking is MCSpace mcSpace && mcSpace.MCList.Count < 2)
             {
                 mcSpace.MCList.Add(motorcycle.RegPlate, motorcycle);
                 return;
             }
-            if (parking.Value is null)
+            if (parking is null)
             {
                 MCSpace MCSpace = new MCSpace();
                 MCSpace.MCList.Add(motorcycle.RegPlate, motorcycle);
-                Space[parking.Key] = MCSpace;
+                Space[Space.IndexOf(parking)] = MCSpace;
                 return;
             }
         }

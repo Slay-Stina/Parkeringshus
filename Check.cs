@@ -36,33 +36,31 @@ abstract class Check
         {
             foreach (var parking in Parking.Space)
             {
-                if (parking.Value is not null)
+                if (parking is Vehicle vehicle && vehicle.RegPlate.Contains(checkOutReg))
                 {
-                    if (parking.Value is Vehicle)
+                    CheckoutString(vehicle);
+                    if (vehicle is Bus)
                     {
-                        Vehicle vehicle = (Vehicle)parking.Value;
-                        if (vehicle.RegPlate.Contains(checkOutReg) && vehicle.RegPlate.Length == 6)
+                        Parking.Space[Parking.Space.IndexOf(parking) + 1] = null;
+                    }
+                    Parking.Space[Parking.Space.IndexOf(parking)] = null;
+                    return;
+                }
+                if (parking is Parking.MCSpace MCSpace)
+                {
+                    foreach (var MC in MCSpace.MCList)
+                    {
+                        if (MC.Value.RegPlate.Contains(checkOutReg))
                         {
-                            CheckoutString(vehicle);
-                            Parking.Space[parking.Key] = null;
+                            CheckoutString(MC.Value);
+                            MCSpace.MCList.Remove(MC.Key);
                         }
                     }
-                    if (parking.Value is Parking.MCSpace)
+                    if (MCSpace.MCList.Count == 0)
                     {
-                        Parking.MCSpace MCSpace = (Parking.MCSpace)parking.Value;
-                        foreach (var MC in MCSpace.MCList)
-                        {
-                            if (MC.Value.RegPlate.Contains(checkOutReg))
-                            {
-                                CheckoutString(MC.Value);
-                                MCSpace.MCList.Remove(MC.Key);
-                            }
-                        }
-                        if (MCSpace.MCList.Count == 0)
-                        {
-                            Parking.Space[parking.Key] = null;
-                        }
+                        Parking.Space[Parking.Space.IndexOf(parking)] = null;
                     }
+                    return;
                 }
             }
         }
@@ -77,7 +75,10 @@ abstract class Check
     private static void CheckoutString(Vehicle vehicle)
     {
         TimeSpan inOutDiff = DateTime.Now - vehicle.CheckinTime;
-        Console.WriteLine($"{vehicle.RegPlate} parkerade {inOutDiff.Minutes} minuter och det kostade {inOutDiff.Minutes * 1.5}kr");
+        if (vehicle.RegPlate.Length == 6)
+        {
+            Console.WriteLine($"{vehicle.RegPlate} parkerade {inOutDiff.Minutes} minuter och det kostade {inOutDiff.Minutes * 1.5}kr"); 
+        }
         if(vehicle is Car)
         {
             Parking.AvailableSpace += 1;
